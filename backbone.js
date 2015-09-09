@@ -643,7 +643,7 @@
       if (attrs && wait) this.attributes = _.extend({}, attributes, attrs);
 
       var method = this.isNew() ? 'create' : (options.patch ? 'patch' : 'update');
-      if (method === 'patch' && !options.attrs) options.attrs = attrs;
+      if ((method === 'patch' || options.patchWithPut) && !options.attrs) options.attrs = attrs;
       var xhr = this.sync(method, this, options);
 
       // Restore attributes.
