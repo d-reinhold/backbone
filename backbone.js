@@ -586,9 +586,8 @@
     // local attributes. Any changed attributes will trigger a "change" event.
     fetch: function(options) {
       options = _.extend({parse: true}, options);
-      var model = this;
       var success = options.success;
-      options.success = function(resp) {
+      options.success = function(model, resp, options) {
         var serverAttrs = options.parse ? model.parse(resp, options) : resp;
         if (!model.set(serverAttrs, options)) return false;
         if (success) success.call(options.context, model, resp, options);
@@ -625,10 +624,9 @@
 
       // After a successful server-side save, the client is (optionally)
       // updated with the server-side state.
-      var model = this;
       var success = options.success;
       var attributes = this.attributes;
-      options.success = function(resp) {
+      options.success = function(model, resp, options) {
         // Ensure attributes are restored during synchronous saves.
         model.attributes = attributes;
         var serverAttrs = options.parse ? model.parse(resp, options) : resp;
@@ -666,7 +664,7 @@
         model.trigger('destroy', model, model.collection, options);
       };
 
-      options.success = function(resp) {
+      options.success = function(model, resp, options) {
         if (wait) destroy();
         if (success) success.call(options.context, model, resp, options);
         if (!model.isNew()) model.trigger('sync', model, resp, options);
@@ -1020,8 +1018,7 @@
     fetch: function(options) {
       options = _.extend({parse: true}, options);
       var success = options.success;
-      var collection = this;
-      options.success = function(resp) {
+      options.success = function(collection, resp, options) {
         var method = options.reset ? 'reset' : 'set';
         collection[method](resp, options);
         if (success) success.call(options.context, collection, resp, options);
